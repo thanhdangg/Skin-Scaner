@@ -45,8 +45,22 @@ class _ScanPageState extends State<ScanPage> {
                 child: CircularProgressIndicator(),
               );
             } else if (state.status == ScanStateStatus.uploaded) {
-              return const Center(
-                child: Text('Image uploaded successfully!'),
+              final response = state.serverResponse;
+              final predictedClass = response?['predicted_class'];
+              final segmentResultUrl = response?['segment_result'];
+
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Predict class: $predictedClass',
+                  ),
+                  const SizedBox(height: 20),
+                  segmentResultUrl != null
+                      ? Image.network(segmentResultUrl)
+                      : Container(),
+                ],
               );
             } else if (state.status == ScanStateStatus.error) {
               return const Center(

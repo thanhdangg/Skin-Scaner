@@ -63,7 +63,6 @@ class ScanBloc extends Bloc<ScanEvent, ScanState> {
     try {
       // Create Dio instance
 
-
       // Create form data with file and upload preset
       FormData formData = FormData.fromMap({
         'upload_preset': uploadPreset,
@@ -72,31 +71,49 @@ class ScanBloc extends Bloc<ScanEvent, ScanState> {
 
       // Send POST request to Cloudinary
       Response response = await dio.post(cloudinaryUrl, data: formData);
-    
 
       // Handle response
       if (response.statusCode == 200) {
         debugPrint('===response: ${response.data}');
-        
-        // Post response data to your server
-        const serverUrl = 'https://thanhdang/url_image';
-        Response serverResponse = await dio.post(serverUrl, data: response.data);
 
+        const serverUrl = 'https://lab-moving-grizzly.ngrok-free.app/predict/';
+        Response serverResponse = await dio.post(
+          serverUrl,
+          data: {
+            'url': response.data['url'],
+          },
+        );
         if (serverResponse.statusCode == 200) {
           debugPrint('===server response: ${serverResponse.data}');
-          emit(state.copyWith(status: ScanStateStatus.uploaded));
+          emit(
+            state.copyWith(
+              status: ScanStateStatus.uploaded,
+              serverResponse: serverResponse.data,
+            ),
+          );
         } else {
           debugPrint('===server upload failed: ${serverResponse.statusCode}');
-          emit(state.copyWith(status: ScanStateStatus.error));
+          emit(
+            state.copyWith(
+              status: ScanStateStatus.error,
+            ),
+          );
         }
-        
       } else {
         debugPrint('===upload failed: ${response.statusCode}');
-        emit(state.copyWith(status: ScanStateStatus.error));
+        emit(
+          state.copyWith(
+            status: ScanStateStatus.error,
+          ),
+        );
       }
     } catch (e) {
       debugPrint('===error: $e');
-      emit(state.copyWith(status: ScanStateStatus.error));
+      emit(
+        state.copyWith(
+          status: ScanStateStatus.error,
+        ),
+      );
     }
   }
 
