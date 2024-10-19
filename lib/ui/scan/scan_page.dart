@@ -8,7 +8,7 @@ import 'package:skin_scanner/utils/enum.dart';
 
 @RoutePage()
 class ScanPage extends StatefulWidget {
-  const ScanPage({Key? key}) : super(key: key);
+  const ScanPage({super.key});
 
   @override
   _ScanPageState createState() => _ScanPageState();
@@ -83,11 +83,11 @@ class _ScanPageState extends State<ScanPage> {
                     onPressed: () {
                       _scanBloc.add(TakePhoto());
                     },
-                    child: const Text('Make Scann'),
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 48),
                       backgroundColor: Colors.green,
                     ),
+                    child: const Text('Make Scan'),
                   ),
                 ),
                 if (state.filePath != null && state.filePath!.isNotEmpty)
@@ -97,10 +97,10 @@ class _ScanPageState extends State<ScanPage> {
                       onPressed: () {
                         _scanBloc.add(UploadPhoto(state.filePath!));
                       },
-                      child: const Text('Upload Photo'),
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 48),
                       ),
+                      child: const Text('Upload Photo'),
                     ),
                   ),
               ],

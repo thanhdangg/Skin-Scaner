@@ -32,6 +32,7 @@ class HomePage extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 // Handle Start Scanner tap
+                debugPrint('===Start Scanner');
                 context.router.push(const ScanRoute());
               },
               child: Container(
@@ -103,7 +104,8 @@ class HomePage extends StatelessWidget {
                   icon: 'assets/images/ic_chat.svg', 
                   label: 'Chatbot',
                   onTap: () {
-                    // Handle Chatbot tap
+                    debugPrint('===Chatbot');
+                    context.router.push(ChatRoute());
                   },
                 ),
                 _buildIconTile(

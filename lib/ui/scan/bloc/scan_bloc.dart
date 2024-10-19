@@ -54,11 +54,11 @@ class ScanBloc extends Bloc<ScanEvent, ScanState> {
     emit(state.copyWith(status: ScanStateStatus.uploading));
 
     // Cloudinary API endpoint
-    final cloudinaryUrl =
+    const cloudinaryUrl =
         'https://api.cloudinary.com/v1_1/djwsawehq/image/upload';
 
     // Your upload preset
-    final uploadPreset = 'PBL6_dang_cuong_trong';
+    const uploadPreset = 'PBL6_dang_cuong_trong';
 
     try {
       // Create Dio instance
@@ -79,7 +79,7 @@ class ScanBloc extends Bloc<ScanEvent, ScanState> {
         debugPrint('===response: ${response.data}');
         
         // Post response data to your server
-        final serverUrl = 'https://thanhdang/url_image';
+        const serverUrl = 'https://thanhdang/url_image';
         Response serverResponse = await dio.post(serverUrl, data: response.data);
 
         if (serverResponse.statusCode == 200) {
