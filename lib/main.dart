@@ -8,7 +8,6 @@ import 'package:skin_scanner/data/repositories/chat_repository.dart';
 import 'package:skin_scanner/data/repositories/scan_repository.dart';
 import 'package:skin_scanner/ui/chat/bloc/chat_bloc.dart';
 import 'package:skin_scanner/ui/home/bloc/home_bloc.dart';
-import 'package:skin_scanner/ui/scan/bloc/scan_bloc.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
