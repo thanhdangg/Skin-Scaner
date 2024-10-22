@@ -8,7 +8,11 @@ enum BlocStateStatus {
 enum ScanStateStatus {
   initial,
   photoTaken,
+  chooseImage,
   uploading,
   uploaded,
+  posting,
+  success,
+  failure,
   error,
 }

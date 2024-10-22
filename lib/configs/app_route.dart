@@ -8,6 +8,11 @@ class AppRoute extends $AppRoute {
         AutoRoute(page: HomeRoute.page, initial: true),
         AutoRoute(page: ScanRoute.page, initial: false),
         AutoRoute(page: ChatRoute.page, initial: false),
+        AutoRoute(page: UploadRoute.page, initial: false),
+        AutoRoute(page: ResultRoute.page, initial: false),
+        AutoRoute(page: LoginRoute.page, initial: false),
+        AutoRoute(page: RegisterRoute.page, initial: false),  
+        AutoRoute(page: ForgotPasswordRoute.page, initial: false),
+        AutoRoute(page: SettingRoute.page, initial: false),
     ];
-  
 }

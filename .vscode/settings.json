@@ -4,11 +4,13 @@
         "cuong",
         "cupertino",
         "dotenv",
+        "Fluttertoast",
         "kwargs",
         "RGBO",
         "Schyler",
         "sqflite",
-        "trong",
+        "thanhdang",
+        "trong"
     ],
     "java.configuration.updateBuildConfiguration": "disabled"
 }

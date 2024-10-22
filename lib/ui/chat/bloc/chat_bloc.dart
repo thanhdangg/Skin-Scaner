@@ -26,7 +26,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     try {
       // Use the repository to send the message
-      final botResponse = await chatRepository.sendMessage(event.message);
+        final botResponse = await chatRepository.sendMessage(event.message);
 
       // Emit success state with updated messages
       emit(state.copyWith(

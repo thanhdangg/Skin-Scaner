@@ -1,24 +1,66 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:skin_scanner/configs/app_route.gr.dart';
 
 @RoutePage()
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  BannerAd? _bannerAd;
+  bool _isBannerAdReady = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBannerAd();
+  }
+
+  void _loadBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: 'ca-app-pub-5605293279545244/3776352306',
+      request: const AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBannerAdReady = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+          debugPrint('===Failed to load a banner ad: ${error.message}');
+        },
+      ),
+    )..load();
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SKIN SCANNER', style: TextStyle(color: Colors.black)),
+        title:
+            const Text('SKIN SCANNER', style: TextStyle(color: Colors.black)),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: SvgPicture.asset(
-            'assets/images/LOGO.svg', // Replace with your actual SVG asset
+            'assets/images/LOGO.svg', 
             fit: BoxFit.contain,
           ),
         ),
@@ -31,7 +73,6 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 20),
             GestureDetector(
               onTap: () {
-                // Handle Start Scanner tap
                 debugPrint('===Start Scanner');
                 context.router.push(const ScanRoute());
               },
@@ -45,7 +86,7 @@ class HomePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SvgPicture.asset(
-                      'assets/images/ic_camera.svg', 
+                      'assets/images/ic_camera.svg',
                       height: 40,
                       width: 40,
                     ),
@@ -85,7 +126,7 @@ class HomePage extends StatelessWidget {
               children: [
                 _buildIconTile(
                   context,
-                  icon: 'assets/images/ic_history.svg', 
+                  icon: 'assets/images/ic_history.svg',
                   label: 'History',
                   onTap: () {
                     // Handle History tap
@@ -96,12 +137,13 @@ class HomePage extends StatelessWidget {
                   icon: 'assets/images/ic_upload.svg',
                   label: 'Upload',
                   onTap: () {
-                    // Handle Upload tap
+                    debugPrint('===Upload');
+                    context.router.push(const UploadRoute());
                   },
                 ),
                 _buildIconTile(
                   context,
-                  icon: 'assets/images/ic_chat.svg', 
+                  icon: 'assets/images/ic_chat.svg',
                   label: 'Chatbot',
                   onTap: () {
                     debugPrint('===Chatbot');
@@ -110,7 +152,7 @@ class HomePage extends StatelessWidget {
                 ),
                 _buildIconTile(
                   context,
-                  icon: 'assets/images/ic_knowledge.svg', 
+                  icon: 'assets/images/ic_knowledge.svg',
                   label: 'Knowledge',
                   onTap: () {
                     // Handle Knowledge tap
@@ -118,6 +160,23 @@ class HomePage extends StatelessWidget {
                 ),
               ],
             ),
+            const Spacer(),
+            if (_isBannerAdReady)
+              SizedBox(
+                height: 50,
+                width: double.infinity,
+                child: AdWidget(ad: _bannerAd!),
+              )
+            else
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  height: 50.0,
+                  width: double.infinity,
+                  color: Colors.white,
+                ),
+              ),
           ],
         ),
       ),
@@ -125,7 +184,9 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildIconTile(BuildContext context,
-      {required String icon, required String label, required VoidCallback onTap}) {
+      {required String icon,
+      required String label,
+      required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -137,11 +198,15 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SvgPicture.asset(icon, height: 40, width: 40, color: Colors.green.shade300),
+            SvgPicture.asset(icon,
+                height: 40, width: 40, color: Colors.green.shade300),
             const SizedBox(height: 8),
             Text(
               label,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green),
+              style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green),
             ),
           ],
         ),

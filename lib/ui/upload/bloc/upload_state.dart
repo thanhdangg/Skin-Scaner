@@ -1,13 +1,12 @@
-part of 'scan_bloc.dart';
-class ScanState {
+part of 'upload_bloc.dart';
+class UploadState {
   final ScanStateStatus status;
   final String? result;
   final String? filePath;
   final Map<String, dynamic>? serverResponse;
   final String? message;
 
-
-  ScanState({
+  UploadState({
     required this.status,
     this.filePath,
     this.result,
@@ -15,7 +14,7 @@ class ScanState {
     this.message,
   });
 
-  factory ScanState.initial() => ScanState(
+  factory UploadState.initial() => UploadState(
         status: ScanStateStatus.initial,
         result: '',
         filePath: '',
@@ -23,14 +22,14 @@ class ScanState {
         message: '',
       );
 
-  ScanState copyWith({
+  UploadState copyWith({
     ScanStateStatus? status,
     String? filePath,
     String? result,
     Map<String, dynamic>? serverResponse,
     String? message,
   }) {
-    return ScanState(
+    return UploadState(
       status: status ?? this.status,
       filePath: filePath?? this.filePath,
       result: result,
