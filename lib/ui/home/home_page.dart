@@ -137,7 +137,8 @@ class _HomePageState extends State<HomePage> {
                   icon: 'assets/images/ic_upload.svg',
                   label: 'Upload',
                   onTap: () {
-                    // Handle Upload tap
+                    debugPrint('===Upload');
+                    context.router.push(const UploadRoute());
                   },
                 ),
                 _buildIconTile(
