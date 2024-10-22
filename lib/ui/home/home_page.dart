@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: SvgPicture.asset(
-            'assets/images/LOGO.svg', 
+            'assets/images/logo.svg', 
             fit: BoxFit.contain,
           ),
         ),

@@ -33,7 +33,7 @@ class ScanRepository {
   }
 
   Future<String> postImageToServer(String url) async {
-  const serverUrl = 'https://lab-moving-grizzly.ngrok-free.app/predict/';
+  const serverUrl = 'http://52.189.253.232/predict/';
   try {
     Response serverResponse = await dio.post(
       serverUrl,
