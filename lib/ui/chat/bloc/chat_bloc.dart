@@ -5,6 +5,7 @@ import 'package:skin_scanner/utils/enum.dart';
 
 part 'chat_event.dart';
 part 'chat_state.dart';
+
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final BuildContext context;
 
@@ -14,7 +15,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Future<void> _onChatMessageSent(
       ChatMessageSent event, Emitter<ChatState> emit) async {
     // Emit loading state
-    emit(state.copyWith(status: BlocStateStatus.loading));
+    emit(
+      state.copyWith(
+        status: BlocStateStatus.loading,
+        messages: List.from(state.messages)..add({'user': event.message}),
+        isLoading: true,
+      ),
+    );
     final chatRepository = ChatRepository();
 
     try {
@@ -24,11 +31,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       // Emit success state with updated messages
       emit(state.copyWith(
         status: BlocStateStatus.success,
-        messages: List.from(state.messages)
-          ..add({'user': event.message, 'bot': botResponse}),
+        messages: List.from(state.messages)..add({'bot': botResponse}),
+        isLoading: false,
       ));
     } catch (e) {
-      emit(state.copyWith(status: BlocStateStatus.failure));
+      emit(state.copyWith(
+        status: BlocStateStatus.failure,
+        messages: List.from(state.messages)..add({'bot': e.toString()}),
+        isLoading: false,
+      ));
     }
   }
 }

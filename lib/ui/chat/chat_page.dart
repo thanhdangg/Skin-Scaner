@@ -1,13 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:skin_scanner/ui/chat/bloc/chat_bloc.dart';
 import 'package:skin_scanner/ui/chat/widgets/chat_bubble.dart';
-import 'package:skin_scanner/utils/enum.dart';
 
 @RoutePage()
 class ChatPage extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   ChatPage({super.key});
 
@@ -21,33 +22,51 @@ class ChatPage extends StatelessWidget {
             child: BlocBuilder<ChatBloc, ChatState>(
               builder: (context, state) {
                 debugPrint('===State Chat: ${state.status}');
-                if (state.status == BlocStateStatus.loading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state.status == BlocStateStatus.failure) {
-                  return const Center(child: Text('Failed to load chat'));
-                }
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (_scrollController.hasClients) {
+                    _scrollController
+                        .jumpTo(_scrollController.position.maxScrollExtent);
+                  }
+                });
                 return ListView.builder(
-                  itemCount: state.messages.length,
+                  controller: _scrollController,
+                  itemCount: state.messages.length + (state.isLoading ? 1 : 0),
                   itemBuilder: (context, index) {
-                    final message = state.messages[index];
-                    return Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: ChatBubble(
-                            message: message['user']!,
-                            isUser: true,
+                    if (index < state.messages.length) {
+                      final message = state.messages[index];
+                      return Column(
+                        children: [
+                          if (message.containsKey('user'))
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: ChatBubble(
+                                message: message['user']!,
+                                isUser: true,
+                              ),
+                            ),
+                          if (message.containsKey('bot'))
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: ChatBubble(
+                                message: message['bot']!,
+                                isUser: false,
+                              ),
+                            ),
+                        ],
+                      );
+                    } else {
+                      return Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[100]!,
+                        child: ListTile(
+                          title: Container(
+                            width: double.infinity,
+                            height: 30.0,
+                            color: Colors.white,
                           ),
                         ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: ChatBubble(
-                            message: message['bot']!,
-                            isUser: false,
-                          ),
-                        ),
-                      ],
-                    );
+                      );
+                    }
                   },
                 );
               },
@@ -60,7 +79,8 @@ class ChatPage extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     controller: _controller,
-                    decoration: const InputDecoration(hintText: "Enter your message"),
+                    decoration:
+                        const InputDecoration(hintText: "Enter your message"),
                   ),
                 ),
                 IconButton(
@@ -80,4 +100,3 @@ class ChatPage extends StatelessWidget {
     );
   }
 }
-
