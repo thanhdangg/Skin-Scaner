@@ -10,5 +10,8 @@ enum ScanStateStatus {
   photoTaken,
   uploading,
   uploaded,
+  posting,
+  success,
+  failure,
   error,
 }
