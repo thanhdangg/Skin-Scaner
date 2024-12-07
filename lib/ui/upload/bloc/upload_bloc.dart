@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:skin_scanner/configs/app_route.gr.dart';
-import 'package:skin_scanner/data/repositories/scan_repository.dart';
 import 'package:skin_scanner/utils/enum.dart';
 import 'package:skin_scanner/utils/photo_uploader.dart';
 

@@ -10,6 +10,8 @@ import 'package:skin_scanner/utils/photo_uploader.dart';
 
 @RoutePage()
 class ScanPage extends StatelessWidget {
+  const ScanPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

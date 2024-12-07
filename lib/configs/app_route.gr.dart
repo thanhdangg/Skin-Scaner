@@ -55,9 +55,11 @@ abstract class $AppRoute extends _i12.RootStackRouter {
       );
     },
     LoginRoute.name: (routeData) {
+      final args = routeData.argsAs<LoginRouteArgs>(
+          orElse: () => const LoginRouteArgs());
       return _i12.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i5.LoginPage(),
+        child: _i5.LoginPage(key: args.key),
       );
     },
     RegisterRoute.name: (routeData) {
@@ -79,7 +81,7 @@ abstract class $AppRoute extends _i12.RootStackRouter {
     ScanRoute.name: (routeData) {
       return _i12.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i8.ScanPage(),
+        child: const _i8.ScanPage(),
       );
     },
     SettingRoute.name: (routeData) {
@@ -97,7 +99,7 @@ abstract class $AppRoute extends _i12.RootStackRouter {
     UploadRoute.name: (routeData) {
       return _i12.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i11.UploadPage(),
+        child: const _i11.UploadPage(),
       );
     },
   };
@@ -176,16 +178,31 @@ class KnowledgeRoute extends _i12.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i5.LoginPage]
-class LoginRoute extends _i12.PageRouteInfo<void> {
-  const LoginRoute({List<_i12.PageRouteInfo>? children})
-      : super(
+class LoginRoute extends _i12.PageRouteInfo<LoginRouteArgs> {
+  LoginRoute({
+    _i13.Key? key,
+    List<_i12.PageRouteInfo>? children,
+  }) : super(
           LoginRoute.name,
+          args: LoginRouteArgs(key: key),
           initialChildren: children,
         );
 
   static const String name = 'LoginRoute';
 
-  static const _i12.PageInfo<void> page = _i12.PageInfo<void>(name);
+  static const _i12.PageInfo<LoginRouteArgs> page =
+      _i12.PageInfo<LoginRouteArgs>(name);
+}
+
+class LoginRouteArgs {
+  const LoginRouteArgs({this.key});
+
+  final _i13.Key? key;
+
+  @override
+  String toString() {
+    return 'LoginRouteArgs{key: $key}';
+  }
 }
 
 /// generated route for

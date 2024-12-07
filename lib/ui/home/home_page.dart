@@ -1,8 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:skin_scanner/configs/app_route.gr.dart';
 
 @RoutePage()
@@ -14,37 +12,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  BannerAd? _bannerAd;
-  bool _isBannerAdReady = false;
 
   @override
   void initState() {
     super.initState();
-    _loadBannerAd();
   }
 
-  void _loadBannerAd() {
-    _bannerAd = BannerAd(
-      adUnitId: 'ca-app-pub-5605293279545244/3776352306',
-      request: const AdRequest(),
-      size: AdSize.banner,
-      listener: BannerAdListener(
-        onAdLoaded: (_) {
-          setState(() {
-            _isBannerAdReady = true;
-          });
-        },
-        onAdFailedToLoad: (ad, error) {
-          ad.dispose();
-          debugPrint('===Failed to load a banner ad: ${error.message}');
-        },
-      ),
-    )..load();
-  }
 
   @override
   void dispose() {
-    _bannerAd?.dispose();
     super.dispose();
   }
 
@@ -160,23 +136,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            const Spacer(),
-            if (_isBannerAdReady)
-              SizedBox(
-                height: 50,
-                width: double.infinity,
-                child: AdWidget(ad: _bannerAd!),
-              )
-            else
-              Shimmer.fromColors(
-                baseColor: Colors.grey[300]!,
-                highlightColor: Colors.grey[100]!,
-                child: Container(
-                  height: 50.0,
-                  width: double.infinity,
-                  color: Colors.white,
-                ),
-              ),
           ],
         ),
       ),

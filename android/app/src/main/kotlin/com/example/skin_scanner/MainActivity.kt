@@ -1,4 +1,4 @@
-package com.thanhdang.skin_scanner
+package com.example.skin_scanner
 
 import io.flutter.embedding.android.FlutterActivity
 

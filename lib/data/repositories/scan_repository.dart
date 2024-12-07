@@ -33,7 +33,7 @@ class ScanRepository {
   }
 
   Future<String> postImageToServer(String url) async {
-  const serverUrl = 'http://52.189.253.232/predict/';
+  const serverUrl = 'http://cuongdc03.id.vn/predict/';
   try {
     Response serverResponse = await dio.post(
       serverUrl,

@@ -1,7 +1,8 @@
 part of 'chat_bloc.dart';
+
 class ChatState {
   final BlocStateStatus status;
-  final List<Map<String, String>> messages; 
+  final List<Map<String, String>> messages;
   final bool isLoading;
 
   ChatState({
@@ -11,10 +12,10 @@ class ChatState {
   });
 
   factory ChatState.initial() => ChatState(
-    status: BlocStateStatus.initial,
-    messages: [],
-    isLoading: false, 
-  );
+        status: BlocStateStatus.initial,
+        messages: [],
+        isLoading: false,
+      );
 
   ChatState copyWith({
     BlocStateStatus? status,
@@ -22,10 +23,9 @@ class ChatState {
     bool? isLoading,
   }) {
     return ChatState(
-      status: status?? this.status,
+      status: status ?? this.status,
       messages: messages ?? this.messages,
       isLoading: isLoading ?? this.isLoading,
     );
   }
-  
 }

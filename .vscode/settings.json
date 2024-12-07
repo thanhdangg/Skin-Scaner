@@ -4,13 +4,19 @@
         "cuong",
         "cupertino",
         "dotenv",
+        "fixnum",
         "Fluttertoast",
         "kwargs",
+        "petitparser",
+        "prefs",
+        "pubspec",
         "RGBO",
         "Schyler",
         "sqflite",
         "thanhdang",
-        "trong"
+        "trong",
+        "xcassets",
+        "xcworkspace"
     ],
     "java.configuration.updateBuildConfiguration": "disabled"
 }
