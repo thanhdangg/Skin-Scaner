@@ -1,12 +1,11 @@
 import 'dart:io';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skin_scanner/configs/app_route.gr.dart';
 import 'package:skin_scanner/ui/upload/bloc/upload_bloc.dart';
 import 'package:skin_scanner/utils/custom_toast.dart';
 import 'package:skin_scanner/utils/enum.dart';
-import 'package:skin_scanner/utils/photo_uploader.dart';
 
 @RoutePage()
 class UploadPage extends StatelessWidget {
@@ -17,7 +16,6 @@ class UploadPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => UploadBloc(
         context: context,
-        photoUploader: PhotoUploader(),
       ),
       child: Scaffold(
         appBar: AppBar(
@@ -25,44 +23,25 @@ class UploadPage extends StatelessWidget {
         ),
         body: BlocListener<UploadBloc, UploadState>(
           listener: (context, state) {
-            debugPrint('===Upload State: ${state.status}');
-            if (state.status == ScanStateStatus.uploaded) {
-              CustomToast.showSuccessToast("Image uploaded successfully.");
+            if (state.status == ScanStateStatus.chooseImage &&
+                state.filePath != null &&
+                state.filePath!.isNotEmpty) {
+              // Navigate to PhotoPreviewPage when an image is selected
+              context.router.push(
+                PhotoPreviewRoute(imagePath: state.filePath!),
+              );
             } else if (state.status == ScanStateStatus.error) {
               CustomToast.showErrorToast("Error: ${state.message}");
             }
           },
           child: BlocBuilder<UploadBloc, UploadState>(
             builder: (context, state) {
-              debugPrint('===State: ${state.status}');
-              if (state.status == ScanStateStatus.uploading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
+              Future.microtask(() {
+                context.read<UploadBloc>().add(ChooseImage());
+              });
 
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<UploadBloc>().add(ChooseImage());
-                    },
-                    child: const Text('Choose Image'),
-                  ),
-                  if (state.filePath != null && state.filePath!.isNotEmpty)
-                    Column(
-                      children: [
-                        Image.file(File(state.filePath!)),
-                        ElevatedButton(
-                          onPressed: () {
-                            context.read<UploadBloc>().add(UploadImage(state.filePath!));
-                          },
-                          child: const Text('Upload Image'),
-                        ),
-                      ],
-                    ),
-                ],
+              return const Center(
+                child: Text('Loading gallery...'),
               );
             },
           ),

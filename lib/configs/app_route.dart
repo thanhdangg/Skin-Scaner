@@ -15,5 +15,7 @@ class AppRoute extends $AppRoute {
         AutoRoute(page: RegisterRoute.page),
         AutoRoute(page: ForgotPasswordRoute.page),
         AutoRoute(page: SettingRoute.page),
+        AutoRoute(page: PhotoPreviewRoute.page),
+        AutoRoute(page: KnowledgeRoute.page),
       ];
 }

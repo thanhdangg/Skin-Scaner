@@ -16,3 +16,11 @@ enum ScanStateStatus {
   failure,
   error,
 }
+
+enum PhotoUploaderStatus {
+  initial,
+  uploading,
+  uploaded,
+  error,
+  success,
+}

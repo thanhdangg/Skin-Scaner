@@ -1,74 +1,95 @@
-import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:skin_scanner/ui/scan/bloc/scan_bloc.dart';
-import 'package:skin_scanner/utils/custom_toast.dart';
-import 'package:skin_scanner/utils/enum.dart';
-import 'package:skin_scanner/utils/photo_uploader.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:skin_scanner/ui/photo_preview/photo_preview_page.dart';
 
 @RoutePage()
-class ScanPage extends StatelessWidget {
+class ScanPage extends StatefulWidget {
   const ScanPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ScanBloc(
-        context: context,
-        photoUploader: PhotoUploader(),
-      ),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Skin Scanner'),
-        ),
-        body: BlocListener<ScanBloc, ScanState>(
-          listener: (context, state) {
-            if (state.status == ScanStateStatus.uploaded) {
-              CustomToast.showSuccessToast("Image uploaded successfully.");
-            } else if (state.status == ScanStateStatus.error) {
-              CustomToast.showErrorToast("Error: ${state.message}");
-            }
-          },
-          child: BlocBuilder<ScanBloc, ScanState>(
-            builder: (context, state) {
-              debugPrint('=== Scan State: ${state.status}');
-              if (state.status == ScanStateStatus.uploading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
+  _ScanPageState createState() => _ScanPageState();
+}
 
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<ScanBloc>().add(TakePhoto());
-                    },
-                    child: const Text('Open Camera'),
-                  ),
-                  if (state.filePath != null && state.filePath!.isNotEmpty)
-                    Column(
-                      children: [
-                        Image.file(File(state.filePath!)),
-                        ElevatedButton(
-                          onPressed: () {
-                            context
-                                .read<ScanBloc>()
-                                .add(UploadPhoto(state.filePath!));
-                          },
-                          child: const Text('Upload Photo'),
-                        ),
-                      ],
-                    ),
-                ],
-              );
-            },
+class _ScanPageState extends State<ScanPage> {
+  CameraController? _cameraController;
+  late List<CameraDescription> _cameras;
+  bool _isCameraInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeCamera();
+  }
+
+  Future<void> _initializeCamera() async {
+    _cameras = await availableCameras();
+    if (_cameras.isNotEmpty) {
+      _cameraController = CameraController(
+        _cameras.first,
+        ResolutionPreset.high,
+      );
+      await _cameraController?.initialize();
+      setState(() {
+        _isCameraInitialized = true;
+      });
+    }
+  }
+
+  Future<void> _takePhoto() async {
+    if (_cameraController != null && _cameraController!.value.isInitialized) {
+      try {
+        final XFile photo = await _cameraController!.takePicture();
+        if (!mounted) return;
+
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PhotoPreviewPage(imagePath: photo.path),
           ),
-        ),
+        );
+      } catch (e) {
+        debugPrint('Error capturing photo: $e');
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _cameraController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Skin Scanner'),
+      ),
+      body: Stack(
+        children: [
+          Expanded(
+            child: _isCameraInitialized
+                ? CameraPreview(_cameraController!)
+                : const Center(child: CircularProgressIndicator()),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(64.0),
+              child: GestureDetector(
+                onTap: _takePhoto, 
+                child: SvgPicture.asset(
+                  'assets/images/ic_take_photo.svg',
+                  fit: BoxFit.contain,
+                  height: 60, 
+                  width: 60, 
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

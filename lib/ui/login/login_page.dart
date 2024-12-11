@@ -22,8 +22,12 @@ class LoginPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColor.primaryColor,
         title: const Text(
-          'Login',
-          style: TextStyle(fontSize: 24.0),
+          'SKIN SCANNER',
+          style: TextStyle(
+            fontSize: 24.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         centerTitle: true,
       ),
@@ -94,13 +98,15 @@ class LoginPage extends StatelessWidget {
                   const SizedBox(height: 24.0),
                   BlocConsumer<LoginBloc, LoginState>(
                     listener: (context, state) {
+                      // Navigate to the Home page
+                      context.router.replace(const HomeRoute());
+
                       if (state.status == BlocStateStatus.success) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                               content: const Text('Login Successful'),
                               backgroundColor: AppColor.primaryColor),
                         );
-                        // Navigate to the next page
                         saveLoginStatus();
                         context.router.replace(const HomeRoute());
                       } else if (state.status == BlocStateStatus.failure) {
@@ -157,6 +163,29 @@ class LoginPage extends StatelessWidget {
                           fontSize: 16.0, color: AppColor.primaryColor),
                     ),
                   ),
+                  const SizedBox(height: 16.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Don\'t have an account?',
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                      SizedBox(width: 8.0),
+                      InkWell(
+                        onTap: () {
+                          context.router.push(RegisterRoute());
+                        },
+                        child: const Text(
+                          'Sign Up',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.blue,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),

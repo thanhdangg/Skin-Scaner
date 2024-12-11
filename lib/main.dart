@@ -13,6 +13,9 @@ import 'package:skin_scanner/data/repositories/scan_repository.dart';
 import 'package:skin_scanner/ui/chat/bloc/chat_bloc.dart';
 import 'package:skin_scanner/ui/home/bloc/home_bloc.dart';
 import 'package:skin_scanner/ui/login/bloc/login_bloc.dart';
+import 'package:skin_scanner/ui/photo_preview/bloc/photo_preview_bloc.dart';
+import 'package:skin_scanner/ui/register/bloc/register_bloc.dart';
+import 'package:skin_scanner/ui/upload/bloc/upload_bloc.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,7 +61,17 @@ class _MyAppState extends State<MyApp> {
           ),
           BlocProvider<LoginBloc>(
             create: (context) => LoginBloc(context: context),
+          ),
+          BlocProvider<RegisterBloc>(
+            create: (context) => RegisterBloc(context: context),
+          ),
+          BlocProvider<PhotoPreviewBloc>(
+            create: (context) => PhotoPreviewBloc(context: context),
+          ),
+          BlocProvider<UploadBloc>(
+            create: (context) => UploadBloc(context: context),
           )
+
         ],
         child: MaterialApp.router(
           title: "My App",

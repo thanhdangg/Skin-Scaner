@@ -12,16 +12,15 @@ part 'upload_state.dart';
 
 class UploadBloc extends Bloc<UploadEvent, UploadState> {
   final BuildContext context;
-  final PhotoUploader photoUploader;
 
-  UploadBloc({required this.context, required this.photoUploader}) : super(UploadState.initial()) {
+  UploadBloc({required this.context}) : super(UploadState.initial()) {
     on<ChooseImage>(_chooseImage);
     on<UploadImage>(_uploadPhoto);
   }
 
-
   Future<void> _uploadPhoto(UploadImage event, Emitter<UploadState> emit) async {
     emit(state.copyWith(status: ScanStateStatus.uploading));
+    final  photoUploader = PhotoUploader();
 
         try {
       final uploadResponse = await photoUploader.uploadImage(event.filePath);
