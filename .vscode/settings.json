@@ -3,14 +3,25 @@
         "cloudinary",
         "cuong",
         "cupertino",
+        "Điểm",
+        "diện",
+        "định",
+        "đoán",
+        "Đoạn",
         "dotenv",
+        "fixnum",
         "Fluttertoast",
         "kwargs",
+        "petitparser",
+        "prefs",
+        "pubspec",
         "RGBO",
         "Schyler",
         "sqflite",
         "thanhdang",
-        "trong"
+        "trong",
+        "xcassets",
+        "xcworkspace"
     ],
     "java.configuration.updateBuildConfiguration": "disabled"
 }

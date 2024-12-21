@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:skin_scanner/configs/app_color.dart';
 
 class CustomToast {
   static void showSuccessToast(String message) {
@@ -8,7 +9,7 @@ class CustomToast {
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
-      backgroundColor: Colors.green,
+      backgroundColor: AppColor.primaryColor,
       textColor: Colors.white,
       fontSize: 16.0,
     );
