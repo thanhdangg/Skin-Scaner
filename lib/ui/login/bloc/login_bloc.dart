@@ -13,7 +13,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginSubmitted>(_onLoginSubmitted);
   }
 
-  Future<void> _onLoginSubmitted(LoginSubmitted event, Emitter<LoginState> emit) async {
+  Future<void> _onLoginSubmitted(
+      LoginSubmitted event, Emitter<LoginState> emit) async {
     final loginRepository = LoginRepository();
 
     emit(state.copyWith(status: BlocStateStatus.loading));

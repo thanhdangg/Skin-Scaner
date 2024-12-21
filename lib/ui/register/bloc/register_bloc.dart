@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:skin_scanner/data/repositories/login_repository.dart';
 import 'package:skin_scanner/utils/enum.dart';
 
 part 'register_event.dart';
@@ -14,11 +15,13 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   Future<void> _onRegisterSubmitted(
       RegisterSubmitted event, Emitter<RegisterState> emit) async {
+    final loginRepository = LoginRepository();
+
     emit(state.copyWith(status: BlocStateStatus.loading));
 
     try {
       // Simulate an API call (replace with real backend call)
-      await Future.delayed(const Duration(seconds: 2));
+      await loginRepository.register(event.username, event.password);
 
       // Mock success
       emit(state.copyWith(status: BlocStateStatus.success));

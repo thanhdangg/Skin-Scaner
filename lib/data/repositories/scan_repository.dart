@@ -13,55 +13,54 @@ class ScanRepository {
     const cloudinaryUrl =
         'https://api.cloudinary.com/v1_1/djwsawehq/image/upload';
     const uploadPreset = 'PBL6_dang_cuong_trong';
-    try{
+    try {
       FormData formData = FormData.fromMap({
         'upload_preset': uploadPreset,
         'file': await MultipartFile.fromFile(filePath),
       });
       // Send POST request to Cloudinary
       Response response = await dio.post(cloudinaryUrl, data: formData);
-      if (response.statusCode == 200){
+      if (response.statusCode == 200) {
         return response.data['url'].toString();
-      }
-      else {
+      } else {
         throw Exception('Failed to upload image');
       }
-    }
-    catch(e){
+    } catch (e) {
       throw Exception('Failed to upload image');
     }
   }
 
   Future<String> postImageToServer(String url) async {
-  const serverUrl = 'http://cuongdc03.id.vn/predict/';
-  try {
-    Response serverResponse = await dio.post(
-      serverUrl,
-      data: {
-        'url': url,
-      },
-    );
-    if (serverResponse.statusCode == 200) {
-      // Print raw server response for debugging
-      debugPrint("===serverResponse.data: ${serverResponse.data}");
+    const serverUrl = 'https://lab-moving-grizzly.ngrok-free.app/predict';
+    try {
+      Response serverResponse = await dio.post(
+        serverUrl,
+        data: {
+          'url': url,
+          'userid': "7",
+        },
+      );
+      if (serverResponse.statusCode == 200) {
+        // Print raw server response for debugging
+        debugPrint("===serverResponse.data: ${serverResponse.data}");
 
-      // Check if serverResponse.data is already a string or needs to be encoded
-      if (serverResponse.data is Map) {
-        // If the response is a Map, it's likely JSON, so return the JSON as a string
-        return json.encode(serverResponse.data);
-      } else if (serverResponse.data is String) {
-        // If the response is already a string, return it as is
-        return serverResponse.data;
+        // Check if serverResponse.data is already a string or needs to be encoded
+        if (serverResponse.data is Map) {
+          // If the response is a Map, it's likely JSON, so return the JSON as a string
+          return json.encode(serverResponse.data);
+        } else if (serverResponse.data is String) {
+          // If the response is already a string, return it as is
+          return serverResponse.data;
+        } else {
+          throw Exception('Unexpected response format from server');
+        }
       } else {
-        throw Exception('Unexpected response format from server');
+        throw Exception(
+            'Failed to post image to server. Status code: ${serverResponse.statusCode}');
       }
-    } else {
-      throw Exception('Failed to post image to server. Status code: ${serverResponse.statusCode}');
+    } catch (e) {
+      debugPrint("===Error posting image to server: $e");
+      throw Exception('Failed to post image to server: $e');
     }
-  } catch (e) {
-    debugPrint("===Error posting image to server: $e");
-    throw Exception('Failed to post image to server: $e');
   }
-}
-
 }
