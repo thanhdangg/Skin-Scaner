@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                         icon: 'assets/images/ic_history.svg',
                         label: 'History',
                         onTap: () {
-                          // Handle History tap
+                          context.router.push(const HistoryRoute());
                         },
                       ),
                       _buildIconTile(

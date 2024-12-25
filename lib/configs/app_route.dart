@@ -17,5 +17,6 @@ class AppRoute extends $AppRoute {
         AutoRoute(page: SettingRoute.page),
         AutoRoute(page: PhotoPreviewRoute.page),
         AutoRoute(page: KnowledgeRoute.page),
+        AutoRoute(page: HistoryRoute.page),
       ];
 }
