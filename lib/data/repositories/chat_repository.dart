@@ -10,21 +10,20 @@ class ChatRepository {
 
   Future<String> sendMessage(String message) async {
     final response = await httpClient.post(
-      Uri.parse('https://equal-poorly-mantis.ngrok-free.app/rag/invoke'),
-      headers: {'Content-Type': 'application/json'},
+      Uri.parse('https://equal-poorly-mantis.ngrok-free.app/skin-cancer-chatbot'),
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
       body: jsonEncode({
-        'input': {
-          'question': message,
-        },
-        'config': {},
-        'kwargs': {},
+        'question': message,
       }),
     );
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       debugPrint('===Response: $data');
-      final content = data['output']['answer']['content'];
+      final content = data['answer']['content'];
       final decodedContent = utf8.decode(content.runes.toList());
       return decodedContent;
     } else {

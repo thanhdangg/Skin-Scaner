@@ -12,19 +12,27 @@ import 'package:http/http.dart' as http;
 
 class LoginRepository {
   Future<int> login(String username, String password) async {
-    final url = Uri.parse('https://lab-moving-grizzly.ngrok-free.app/login');
+    // final url = Uri.parse('https://lab-moving-grizzly.ngrok-free.app/login');
+    final url = Uri.parse('https://z94n3sz2-80.asse.devtunnels.ms/login');
     final response = await _sendPostRequest(url, username, password);
 
     if (response.statusCode == 200) {
       final responseBody = jsonDecode(response.body);
-      return responseBody['userid'];
+      final userId = responseBody['userid'];
+
+      // Save userId to SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('userId', userId);
+
+      return userId;
     } else {
-      throw Exception('Failed to login: ${response.statusCode} - ${response.reasonPhrase}');
+      throw Exception(
+          'Failed to login: ${response.statusCode} - ${response.reasonPhrase}');
     }
   }
 
   Future<int> register(String username, String password) async {
-    final url = Uri.parse('https://lab-moving-grizzly.ngrok-free.app/register');
+    final url = Uri.parse('https://z94n3sz2-80.asse.devtunnels.ms/register');
     final response = await _sendPostRequest(url, username, password);
 
     if (response.statusCode == 201) {
@@ -32,11 +40,13 @@ class LoginRepository {
       debugPrint('User created successfully: ${responseBody['message']}');
       return responseBody['userid'];
     } else {
-      throw Exception('Failed to register: ${response.statusCode} - ${response.reasonPhrase}');
+      throw Exception(
+          'Failed to register: ${response.statusCode} - ${response.reasonPhrase}');
     }
   }
 
-  Future<http.Response> _sendPostRequest(Uri url, String username, String password) async {
+  Future<http.Response> _sendPostRequest(
+      Uri url, String username, String password) async {
     debugPrint('Sending request to: $url');
     final response = await http.post(
       url,
