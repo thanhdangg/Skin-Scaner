@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,11 +27,14 @@ class PhotoPreviewBloc extends Bloc<PhotoPreviewEvent, PhotoPreviewState> {
 
       final serverResponse = await photoUploader.sendToServer(uploadResponse);
       debugPrint('===Server response: $serverResponse');
-      emit(state.copyWith(status: PhotoUploaderStatus.success, serverResponse: serverResponse));
 
-      context.router.push(ResultRoute(serverResponse: serverResponse));
+      final parsedResponse = jsonDecode(serverResponse);
+
+      emit(state.copyWith(status: PhotoUploaderStatus.success, serverResponse: parsedResponse));
+
+      context.router.push(ResultRoute(serverResponse: parsedResponse));
     } catch (error) {
-      debugPrint('===Error: $error');
+      debugPrint('===Error preview: $error');
       emit(state.copyWith(status: PhotoUploaderStatus.error, message: error.toString()));
     }
   }

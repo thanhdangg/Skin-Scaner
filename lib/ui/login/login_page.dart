@@ -98,7 +98,7 @@ class LoginPage extends StatelessWidget {
                   const SizedBox(height: 24.0),
                   BlocConsumer<LoginBloc, LoginState>(
                     listener: (context, state) {
-                      // context.router.replace(const HomeRoute());
+                      context.router.replace(const HomeRoute());
                       if (state.status == BlocStateStatus.success) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

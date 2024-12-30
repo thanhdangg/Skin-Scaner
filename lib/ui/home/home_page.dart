@@ -36,8 +36,8 @@ class _HomePageState extends State<HomePage> {
         elevation: 0,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: SvgPicture.asset(
-            'assets/images/logo.svg',
+          child: Image.asset(
+            'assets/images/LOGO.jpg',
             fit: BoxFit.contain,
           ),
         ),

@@ -8,6 +8,8 @@ import 'package:skin_scanner/ui/history/bloc/history_bloc.dart';
 class HistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    context.read<HistoryBloc>().add(FetchHistory());
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('History'),
@@ -15,6 +17,7 @@ class HistoryPage extends StatelessWidget {
       body: Center(
         child: BlocBuilder<HistoryBloc, HistoryState>(
           builder: (context, state) {
+            debugPrint('===HistoryBloc state: $state');
             if (state.isLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state.error != null) {
@@ -41,15 +44,71 @@ class HistoryPage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final prediction = state.predictions[index];
                   final segmentImage = prediction['segment_image'] ?? '';
-                  final predictionResult = prediction['prediction_result'] ?? 'Unknown';
+                  final rawImage = prediction['raw_image'] ?? '';
+                  final predictionResult =
+                      prediction['prediction_result'] ?? 'Unknown';
                   final userId = prediction['user_id'] ?? 'N/A';
 
-                  return ListTile(
-                    leading: segmentImage.isNotEmpty
-                        ? Image.network(segmentImage)
-                        : const Icon(Icons.image_not_supported),
-                    title: Text(predictionResult),
-                    subtitle: Text('User ID: $userId'),
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 8.0),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      elevation: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                if (segmentImage.isNotEmpty)
+                                  Expanded(
+                                    child: Image.network(
+                                      segmentImage,
+                                      fit: BoxFit.cover,
+                                      height: 150,
+                                    ),
+                                  )
+                                else
+                                  const Expanded(
+                                    child: Icon(
+                                      Icons.image_not_supported,
+                                      size: 50,
+                                    ),
+                                  ),
+                                const SizedBox(width: 10),
+                                if (rawImage.isNotEmpty)
+                                  Expanded(
+                                    child: Image.network(
+                                      rawImage,
+                                      fit: BoxFit.cover,
+                                      height: 150,
+                                    ),
+                                  )
+                                else
+                                  const Expanded(
+                                    child: Icon(
+                                      Icons.image_not_supported,
+                                      size: 50,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Prediction: $predictionResult',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   );
                 },
               );
