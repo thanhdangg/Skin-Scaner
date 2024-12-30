@@ -16,26 +16,35 @@ class PhotoPreviewBloc extends Bloc<PhotoPreviewEvent, PhotoPreviewState> {
     on<UploadPhoto>(_uploadPhoto);
   }
 
-  Future<void> _uploadPhoto(UploadPhoto event, Emitter<PhotoPreviewState> emit) async {
-    final  photoUploader = PhotoUploader();
-    emit(state.copyWith(status: PhotoUploaderStatus.uploading));
+Future<void> _uploadPhoto(UploadPhoto event, Emitter<PhotoPreviewState> emit) async {
+  final photoUploader = PhotoUploader();
+  emit(state.copyWith(status: PhotoUploaderStatus.uploading));
 
-    try {
-      final uploadResponse = await photoUploader.uploadImage(event.filePath);
-      debugPrint('===Upload response: $uploadResponse');
-      emit(state.copyWith(status: PhotoUploaderStatus.uploaded));
+  try {
+    final uploadResponse = await photoUploader.uploadImage(event.filePath);
+    debugPrint('===Upload response: $uploadResponse');
 
-      final serverResponse = await photoUploader.sendToServer(uploadResponse);
-      debugPrint('===Server response: $serverResponse');
+    emit(state.copyWith(status: PhotoUploaderStatus.uploaded));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Upload cloud success')),
+    );
 
-      final parsedResponse = jsonDecode(serverResponse);
+    emit(state.copyWith(status: PhotoUploaderStatus.server_progress));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Wait for server response')),
+    );
 
-      emit(state.copyWith(status: PhotoUploaderStatus.success, serverResponse: parsedResponse));
+    final serverResponse = await photoUploader.sendToServer(uploadResponse);
+    debugPrint('===Server response: $serverResponse');
 
-      context.router.push(ResultRoute(serverResponse: parsedResponse));
-    } catch (error) {
-      debugPrint('===Error preview: $error');
-      emit(state.copyWith(status: PhotoUploaderStatus.error, message: error.toString()));
-    }
+    final parsedResponse = jsonDecode(serverResponse);
+
+    emit(state.copyWith(status: PhotoUploaderStatus.success, serverResponse: parsedResponse));
+    context.router.push(ResultRoute(serverResponse: parsedResponse));
+  } catch (error) {
+    debugPrint('===Error preview: $error');
+    emit(state.copyWith(status: PhotoUploaderStatus.error, message: error.toString()));
   }
+}
+
 }

@@ -21,6 +21,7 @@ enum PhotoUploaderStatus {
   initial,
   uploading,
   uploaded,
+  server_progress,
   error,
   success,
 }
