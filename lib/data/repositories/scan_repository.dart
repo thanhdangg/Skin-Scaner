@@ -32,16 +32,17 @@ class ScanRepository {
   }
   Future<String> postImageToServer(String url) async {
     // const serverUrl = 'https://lab-moving-grizzly.ngrok-free.app/predict/';
-    const serverUrl = 'https://z94n3sz2-80.asse.devtunnels.ms/predict';
+    const serverUrl = 'https://z94n3sz2-3100.asse.devtunnels.ms/predict';
 
     try {
       // Retrieve userId from SharedPreferences
-      final prefs = await SharedPreferences.getInstance();
-      final userId = prefs.getInt('userId');
+      // final prefs = await SharedPreferences.getInstance();
+      // final userId = prefs.getInt('userId');
 
-      if (userId == null) {
-        throw Exception('User ID not found in SharedPreferences');
-      }
+      // if (userId == null) {
+      //   throw Exception('User ID not found in SharedPreferences');
+      // }
+      // const userId  = "1";
 
       final response = await http.post(
         Uri.parse(serverUrl),

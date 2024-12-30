@@ -79,11 +79,11 @@ class _SplashPageState extends State<SplashPage>
                   scale: _animation,
                   child: Column(
                     children: [
-                      SvgPicture.asset(
-                        'assets/images/logo.svg',
+                        Image.asset(
+                        'assets/images/LOGO.jpg',
                         height: size.width * 0.4,
                         fit: BoxFit.contain,
-                      ),
+                        ),
                       const SizedBox(height: 20),
                       const Text(
                         'Skin Scanner',

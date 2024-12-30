@@ -30,6 +30,8 @@ class PhotoPreviewPage extends StatelessWidget {
           },
           builder: (context, state) {
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Hiển thị ảnh chụp
                 Expanded(

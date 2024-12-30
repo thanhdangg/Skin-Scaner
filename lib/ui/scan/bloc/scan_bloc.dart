@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,11 +41,13 @@ class ScanBloc extends Bloc<ScanEvent, ScanState> {
 
       final serverResponse = await photoUploader.sendToServer(uploadResponse);
       debugPrint('===Server response: $serverResponse');
-      emit(state.copyWith(status: ScanStateStatus.success, serverResponse: serverResponse));
+      final parsedResponse = jsonDecode(serverResponse);
 
-      context.router.push(ResultRoute(serverResponse: serverResponse));
+      emit(state.copyWith(status: ScanStateStatus.success, serverResponse: parsedResponse));
+
+      context.router.push(ResultRoute(serverResponse: parsedResponse));
     } catch (error) {
-      debugPrint('===Error: $error');
+      debugPrint('===Error Scan: $error');
       emit(state.copyWith(status: ScanStateStatus.error, message: error.toString()));
     }
   }

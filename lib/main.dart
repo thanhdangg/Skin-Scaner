@@ -8,9 +8,11 @@ import 'package:skin_scanner/configs/app_route.dart';
 import 'package:skin_scanner/configs/app_route.gr.dart';
 import 'package:skin_scanner/configs/locator.dart';
 import 'package:skin_scanner/data/repositories/chat_repository.dart';
+import 'package:skin_scanner/data/repositories/history_repository.dart';
 import 'package:skin_scanner/data/repositories/login_repository.dart';
 import 'package:skin_scanner/data/repositories/scan_repository.dart';
 import 'package:skin_scanner/ui/chat/bloc/chat_bloc.dart';
+import 'package:skin_scanner/ui/history/bloc/history_bloc.dart';
 import 'package:skin_scanner/ui/home/bloc/home_bloc.dart';
 import 'package:skin_scanner/ui/login/bloc/login_bloc.dart';
 import 'package:skin_scanner/ui/photo_preview/bloc/photo_preview_bloc.dart';
@@ -50,6 +52,9 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider(
           create: (context) => LoginRepository(),
         ),
+        RepositoryProvider(
+          create: (context) => HistoryRepository(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -70,8 +75,12 @@ class _MyAppState extends State<MyApp> {
           ),
           BlocProvider<UploadBloc>(
             create: (context) => UploadBloc(context: context),
-          )
-
+          ),
+          BlocProvider<HistoryBloc>(
+            create: (context) => HistoryBloc(
+              historyRepository: context.read<HistoryRepository>(),
+            ),
+          ),
         ],
         child: MaterialApp.router(
           title: "My App",

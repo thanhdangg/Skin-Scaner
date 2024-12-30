@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skin_scanner/configs/app_dio.dart';
@@ -7,8 +6,6 @@ import 'package:skin_scanner/configs/locator.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 class LoginRepository {
   Future<int> login(String username, String password) async {

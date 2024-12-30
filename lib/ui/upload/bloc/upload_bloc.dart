@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,23 +19,28 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
     on<UploadImage>(_uploadPhoto);
   }
 
-  Future<void> _uploadPhoto(UploadImage event, Emitter<UploadState> emit) async {
+  Future<void> _uploadPhoto(
+      UploadImage event, Emitter<UploadState> emit) async {
     emit(state.copyWith(status: ScanStateStatus.uploading));
-    final  photoUploader = PhotoUploader();
+    final photoUploader = PhotoUploader();
 
-        try {
+    try {
       final uploadResponse = await photoUploader.uploadImage(event.filePath);
       debugPrint('===Upload response: $uploadResponse');
       emit(state.copyWith(status: ScanStateStatus.uploaded));
 
       final serverResponse = await photoUploader.sendToServer(uploadResponse);
       debugPrint('===Server response: $serverResponse');
-      emit(state.copyWith(status: ScanStateStatus.success, serverResponse: serverResponse));
+      final parsedResponse = jsonDecode(serverResponse);
 
-      context.router.push(ResultRoute(serverResponse: serverResponse));
+      emit(state.copyWith(
+          status: ScanStateStatus.success, serverResponse: parsedResponse));
+
+      context.router.push(ResultRoute(serverResponse: parsedResponse));
     } catch (error) {
       debugPrint('===Error: $error');
-      emit(state.copyWith(status: ScanStateStatus.error, message: error.toString()));
+      emit(state.copyWith(
+          status: ScanStateStatus.error, message: error.toString()));
     }
   }
 
@@ -42,16 +48,26 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
       ChooseImage event, Emitter<UploadState> emit) async {
     try {
       final picker = ImagePicker();
-      final filePath = await picker.pickImage(source: ImageSource.gallery);
+      final file = await picker.pickImage(source: ImageSource.gallery);
+      if (file != null) {
+        emit(
+          state.copyWith(
+            status: ScanStateStatus.chooseImage,
+            filePath: file.path,
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            status: ScanStateStatus.error,
+            message: 'No image selected.',  
+          ),
+        );
+      }
+    } catch (e) {
       emit(
         state.copyWith(
-          status: ScanStateStatus.chooseImage,
-          filePath: filePath!.path,
-        ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
+          status: ScanStateStatus.error,
           message: e.toString(),
         ),
       );

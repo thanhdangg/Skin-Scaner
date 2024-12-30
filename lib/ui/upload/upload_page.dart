@@ -14,34 +14,30 @@ class UploadPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => UploadBloc(
-        context: context,
-      ),
+      create: (context) => UploadBloc(context: context),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Upload Image'),
-        ),
+        appBar: AppBar(title: const Text('Upload Image')),
         body: BlocListener<UploadBloc, UploadState>(
           listener: (context, state) {
             if (state.status == ScanStateStatus.chooseImage &&
                 state.filePath != null &&
                 state.filePath!.isNotEmpty) {
-              // Navigate to PhotoPreviewPage when an image is selected
-              context.router.push(
-                PhotoPreviewRoute(imagePath: state.filePath!),
-              );
+              // Chuyển đến trang xem trước ảnh
+              context.router.push(PhotoPreviewRoute(imagePath: state.filePath!));
             } else if (state.status == ScanStateStatus.error) {
+              // Hiển thị lỗi
               CustomToast.showErrorToast("Error: ${state.message}");
             }
           },
           child: BlocBuilder<UploadBloc, UploadState>(
             builder: (context, state) {
-              Future.microtask(() {
-                context.read<UploadBloc>().add(ChooseImage());
-              });
-
-              return const Center(
-                child: Text('Loading gallery...'),
+              return Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    context.read<UploadBloc>().add(ChooseImage());
+                  },
+                  child: const Text('Choose Image'),
+                ),
               );
             },
           ),
