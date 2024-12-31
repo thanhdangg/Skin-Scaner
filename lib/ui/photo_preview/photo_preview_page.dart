@@ -26,6 +26,14 @@ class PhotoPreviewPage extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.message ?? 'Upload failed')),
               );
+            } else if (state.status == PhotoUploaderStatus.uploaded) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Upload cloud success')),
+              );
+            } else if (state.status == PhotoUploaderStatus.server_progress) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Wait for server response')),
+              );
             }
           },
           builder: (context, state) {
@@ -33,15 +41,13 @@ class PhotoPreviewPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Hiển thị ảnh chụp
                 Expanded(
                   child: Image.file(
                     File(imagePath),
                     fit: BoxFit.contain,
                   ),
                 ),
-                // Hiển thị trạng thái
-                if (state.status == PhotoUploaderStatus.uploading)
+                if (state.status == PhotoUploaderStatus.uploading || state.status == PhotoUploaderStatus.server_progress)
                   const LinearProgressIndicator(),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -51,8 +57,9 @@ class PhotoPreviewPage extends StatelessWidget {
                     onPressed: state.status == PhotoUploaderStatus.uploading
                         ? null
                         : () {
-                            // Gửi sự kiện upload ảnh
-                            context.read<PhotoPreviewBloc>().add(UploadPhoto(imagePath));
+                            context
+                                .read<PhotoPreviewBloc>()
+                                .add(UploadPhoto(imagePath));
                           },
                   ),
                 ),

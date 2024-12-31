@@ -1,4 +1,3 @@
-
 import 'package:auto_route/auto_route.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +17,11 @@ class _ScanPageState extends State<ScanPage> {
   late List<CameraDescription> _cameras;
   bool _isCameraInitialized = false;
 
+  double _currentZoomLevel = 1.0;
+  double _maxZoomLevel = 1.0;
+  double _minZoomLevel = 1.0;
+  double _zoomLevel = 1.0;
+
   @override
   void initState() {
     super.initState();
@@ -31,9 +35,25 @@ class _ScanPageState extends State<ScanPage> {
         _cameras.first,
         ResolutionPreset.high,
       );
+
       await _cameraController?.initialize();
+
+      // Lấy giới hạn zoom
+      _maxZoomLevel = await _cameraController!.getMaxZoomLevel();
+      _minZoomLevel = await _cameraController!.getMinZoomLevel();
+
       setState(() {
         _isCameraInitialized = true;
+      });
+    }
+  }
+  void _handleZoom(ScaleUpdateDetails details) {
+    if (_cameraController != null) {
+      setState(() {
+        // Cập nhật mức zoom theo độ thay đổi scale
+        _zoomLevel = (_zoomLevel * details.scale)
+            .clamp(1.0, _maxZoomLevel); // Giới hạn trong khoảng 1.0 đến maxZoomLevel
+        _cameraController?.setZoomLevel(_zoomLevel);
       });
     }
   }
@@ -69,7 +89,8 @@ class _ScanPageState extends State<ScanPage> {
       ),
       body: Stack(
         children: [
-          Expanded(
+          GestureDetector(
+            onScaleUpdate: _handleZoom, // Xử lý zoom khi có sự kiện scale
             child: _isCameraInitialized
                 ? CameraPreview(_cameraController!)
                 : const Center(child: CircularProgressIndicator()),
@@ -79,12 +100,12 @@ class _ScanPageState extends State<ScanPage> {
             child: Padding(
               padding: const EdgeInsets.all(64.0),
               child: GestureDetector(
-                onTap: _takePhoto, 
+                onTap: _takePhoto,
                 child: SvgPicture.asset(
                   'assets/images/ic_take_photo.svg',
                   fit: BoxFit.contain,
-                  height: 60, 
-                  width: 60, 
+                  height: 60,
+                  width: 60,
                 ),
               ),
             ),
